@@ -59,6 +59,8 @@ component{
                 "INSERT INTO personal (name, email, age) VALUES (:name, :email, :age)",
                 local.dataToInsert
             );
+            var message = new core.Message();
+            message.flash("success", "Crate Data Success");
             return { 
                 code: 201,
                 success=true,

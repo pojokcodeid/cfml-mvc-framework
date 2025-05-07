@@ -1,5 +1,15 @@
 <cfoutput>
     <div class="container mt-5">
+        <cfset var message = new core.Message()>
+        <cfset var flash = message.getFlash()>
+
+        <cfif structKeyExists(flash, "type")>
+            <div class="alert alert-#flash.type# alert-dismissible fade show" role="alert">
+                #flash.message#
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </cfif>
+            
         <a href="#application.baseURL#/employee/add" class="btn btn-primary btn-sm">Add New</a>
         <table class="table">
             <thead>
