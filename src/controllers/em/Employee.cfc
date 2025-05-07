@@ -16,6 +16,10 @@ component extends="core.BaseController" {
         view("emp.index", content);
     }
 
+    public any function addNew(){
+        view("emp.add");
+    }
+
     public any function getById(id){
         var emp = model("em.Employee");
         // return emp.getById(id);
@@ -23,9 +27,10 @@ component extends="core.BaseController" {
         view("emp.index", local.content);
     }
 
-    public struct function createData(content={}){
-        var emp= new models.Employee();
-        return emp.createData(content);
+    public any function createData(content={}){
+        var emp= model("em.Employee");
+        local.content = emp.createData(content);
+        getAll();
     }
 
     public struct function updateData(id){

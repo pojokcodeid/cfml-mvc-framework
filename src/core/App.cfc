@@ -121,7 +121,11 @@ component {
         // menangani kiriman json data
         local.content = {};
         if (len(trim(getHttpRequestData().content))) {
-            local.content = deserializeJson(getHttpRequestData().content);
+            try {
+                local.content = deserializeJson(getHttpRequestData().content);
+            } catch (any e) {
+                local.content = form; // fallback to form data if JSON deserialization fails
+            }
             arrayAppend(variables.paramsVariables, "content");
             arrayAppend(variables.params, local.content);
         }

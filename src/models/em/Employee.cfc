@@ -49,12 +49,30 @@ component{
     }
 
     public struct function createData(content){
-        return { 
-            code: 201,
-			success=true,
-			message="Crate Data Success", 
-			data= content
-		};
+        local.dataToInsert = {
+            name = {value=content.name, sqltype="CF_SQL_VARCHAR"},
+            email = {value=content.email, sqltype="CF_SQL_VARCHAR"},
+            age = {value=content.age, sqltype="CF_SQL_INTEGER"}
+        };
+        try{
+            local.qInsert = queryExecute(
+                "INSERT INTO personal (name, email, age) VALUES (:name, :email, :age)",
+                local.dataToInsert
+            );
+            return { 
+                code: 201,
+                success=true,
+                message="Crate Data Success", 
+                data= {}
+            };
+        } catch (any e) {
+            return { 
+                code: 400,
+                success=false,
+                message="Crate Data Failed", 
+                data= {}
+            };
+        }
     }
 
     public struct function updateData(id){
