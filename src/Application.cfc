@@ -2,10 +2,22 @@ component {
 	this.name = "MyApplication"; // Nama aplikasi
 	this.applicationTimeout = createTimeSpan(0, 2, 0, 0); // Waktu kedaluwarsa aplikasi
 
+    globalConfig = expandPath("/configs/global.json");
+    if (fileExists(globalConfig)) {
+        datasourceConfig = deserializeJSON(fileRead(globalConfig));
+        this.datasource = structKeyArray(datasourceConfig.datasource)[1];
+        this.datasources = datasourceConfig.datasource;
+    } else {
+        writeDump("Datasource config file not found: #globalConfig#");
+        abort;
+    }
+    
 	function onApplicationStart() {
-		return true;
+        application.baseURL = datasourceConfig.baseURL;
+        // application.datasource = structKeyArray(datasourceConfig.datasource)[1];
+        return true;
 	}
-
+    
 	function onRequestStart(string targetPage) {
 	}
 
@@ -29,13 +41,12 @@ component {
 	// 		}
 	// 	}
     //     cfheader(statuscode="500", statustext="Error Internal Server");
-    //     cfheader(name="Content-Type", value="application/json");
-    //     writeOutput(serializeJSON({
-    //         success=false,
-    //         message="Something went wrong",
-    //         data={},
-    //         errorcode=uuid
-    //     },true));
+    //     // Output to user
+	// 	writeOutput("
+    //         <h2>Oops! Something went wrong.</h2>
+    //         <p>Please contact support with this reference ID:</p>
+    //         <code>#uuid#</code>
+    //     ");
     //     return false;
     // }
 }

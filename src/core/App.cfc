@@ -126,6 +126,8 @@ component {
             arrayAppend(variables.params, local.content);
         }
         
+        // writeDump(var=cgi, label="controllerFile");
+        // cfabort();
         var controllerPath = "/controllers/#replace(controllerFile, ".", "/", "all")#.cfc";
         if (fileExists(expandPath(controllerPath))) {
             var controller = createObject("component", "controllers.#controllerFile#");
