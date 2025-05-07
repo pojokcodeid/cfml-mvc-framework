@@ -3,8 +3,9 @@ component extends="core.BaseController" {
 
     variables.emp = model("em.Employee");
     variables.rules = {
-        name: "required",
-        email: "required|is_email",
+        // name  : "required|strong_password|min:3|max:20",
+        name  : "required|min:3|max:20",
+        email : "required|is_email|max:50",
         age: "required|is_numeric"
     }
     
