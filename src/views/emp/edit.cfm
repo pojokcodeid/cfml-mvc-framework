@@ -2,11 +2,6 @@
     <div class="container mt-5">
         <cfset var message = new core.Message()>
         <cfset var flash = message.getFlash()>
-        <cfset data = {
-            name = "",
-            email = "",
-            age = ""
-        }>
         <cfif structKeyExists(flash, "type")>
             <div class="alert alert-#flash.type# alert-dismissible fade show" role="alert">
                 #flash.message#
@@ -14,8 +9,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </cfif>
-        <h3>Add Employee</h3>
-        <form class="mt-4" action="#application.baseURL#/employee" method="post">
+        <h3>Edit Employee</h3>
+        <form class="mt-4" action="#application.baseURL#/employee/edit/#data.id#" method="post">
             <div class="mb-3 row">
                 <label for="name" class="col-sm-2 col-form-label">Name</label>
                 <div class="col-sm-10">
@@ -37,7 +32,7 @@
             <div class="mb-3 row">
                 <div for="age" class="col-sm-2"></div>
                 <div class="col-sm-3">
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
                 </div>
             </div>
         </form>

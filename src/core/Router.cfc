@@ -7,10 +7,10 @@ component {
         app.get("/employee/say-hay", { controller: "em.Employee", method: "sayHay"});
         app.get("/employee", { controller: "em.Employee", method: "getAll"});
         app.get("/employee/add", { controller: "em.Employee", method: "addNew"});
-        app.get("/employee/:id", { controller: "em.Employee", method: "getById"});
+        app.get("/employee/edit/:id", { controller: "em.Employee", method: "getById"});
+        app.post("/employee/edit/:id", { controller: "em.Employee", method: "updateData"});
         app.post("/employee", { controller: "em.Employee", method: "createData"});
-        app.put("/employee/:id", { controller: "em.Employee", method: "updateData"});
-        app.delete("/employee/:id", { controller: "em.Employee", method: "deleteData"});
+        app.get("/employee/delete/:id", { controller: "em.Employee", method: "deleteData"});
         return app.run();
     }
 }

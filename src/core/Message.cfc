@@ -1,11 +1,11 @@
-component {
+component extends="core.Validation" {
 
-    public struct function flash(type, message) {
+    public void function flash(type, message, data={}) {
         session.flash = {
             type=type,
-            message=message
+            message=message,
+            data=data
         };
-        return true;
     }
 
     public struct function getFlash() {

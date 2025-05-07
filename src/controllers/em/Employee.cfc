@@ -1,17 +1,14 @@
 
 component extends="core.BaseController" {
+
+    variables.emp = model("em.Employee");
     
     public function init() {
         return this;
     }
 
-    public struct function sayHay(id){
-        var emp= new models.Employee();
-        return emp.sayHay(id);
-    }
 
     public any function getAll(){
-        var emp = model("em.Employee");
         var content = emp.getAllData();
         view("emp.index", content);
     }
@@ -21,25 +18,54 @@ component extends="core.BaseController" {
     }
 
     public any function getById(id){
-        var emp = model("em.Employee");
-        // return emp.getById(id);
         local.content= emp.getById(id);
-        view("emp.index", local.content);
+        view("emp.edit", local.content);
     }
 
     public any function createData(content={}){
-        var emp= model("em.Employee");
-        local.content = emp.createData(content);
-        getAll();
+        var rules = {
+            name: "required",
+            email: "required|is_email",
+            age: "required|is_numeric"
+        }
+        var result = validate(content, rules);
+        if(result.success){
+            local.content = emp.createData(content);
+            redirect("/employee");
+        }else{
+            flash("danger", result.errors[1],{
+                name: content.name,
+                email: content.email,
+                age: content.age
+            });
+            redirect("/employee/add");
+        }
     }
 
-    public struct function updateData(id){
-        var emp= new models.Employee();
-        return emp.updateData(id);
+    public any function updateData(id, content={}){
+        var rules = {
+            name: "required",
+            email: "required|is_email",
+            age: "required|is_numeric"
+        }
+        var result = validate(content, rules);
+        if(result.success){
+            content.id = id;
+            emp.updateData(content);
+            redirect("/employee");
+        }else{
+            flash("danger", result.errors[1],{
+                id: id,
+                name: content.name,
+                email: content.email,
+                age: content.age
+            });
+            redirect("/employee/edit/" & id);
+        }
     }
     public struct function deleteData(id){
-        var emp= new models.Employee();
-        return emp.deleteData(id);
+        emp.deleteData(id);
+        redirect("/employee");
     }
     
 }

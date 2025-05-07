@@ -1,4 +1,4 @@
-component{
+component extends="core.Message" {
     
     public function init() {
         return this;
@@ -37,18 +37,32 @@ component{
     }
 
     public struct function getById(id){
+        local.qPersonal = queryExecute(
+            "SELECT id, name, email, age FROM personal WHERE id = ?",
+            [id]
+        );
+        if (local.qPersonal.recordCount) {
+            return { 
+                code: 200,
+                success=true,
+                message="Get Data Success", 
+                data= {
+                    id = local.qPersonal.id,
+                    name = local.qPersonal.name,
+                    email = local.qPersonal.email,
+                    age = local.qPersonal.age
+                }
+            };
+        }
         return { 
-            code: 200,
-			success=true,
-			message="Get Data By Id Success", 
-            key=id,
-			data= {
-                name="Pojok Code"
-            }
+            code: 404,
+			success=false,
+			message="data not found", 
+			data= {}
 		};
     }
 
-    public struct function createData(content){
+    public void function createData(content){
         local.dataToInsert = {
             name = {value=content.name, sqltype="CF_SQL_VARCHAR"},
             email = {value=content.email, sqltype="CF_SQL_VARCHAR"},
@@ -59,45 +73,40 @@ component{
                 "INSERT INTO personal (name, email, age) VALUES (:name, :email, :age)",
                 local.dataToInsert
             );
-            var message = new core.Message();
-            message.flash("success", "Crate Data Success");
-            return { 
-                code: 201,
-                success=true,
-                message="Crate Data Success", 
-                data= {}
-            };
+            flash("success", "Crate Data Success");
         } catch (any e) {
-            return { 
-                code: 400,
-                success=false,
-                message="Crate Data Failed", 
-                data= {}
-            };
+            flash("danger", "Crate Data Failed");
         }
     }
 
-    public struct function updateData(id){
-        return { 
-            code: 200,
-			success=true,
-			message="Update Data Success", 
-            key=id,
-			data= {
-                name="Pojok Code"
-            }
-		};
+    public void function updateData(content){
+        local.dataToUpdate = {
+            id = {value=content.id, sqltype="CF_SQL_INTEGER"},
+            name = {value=content.name, sqltype="CF_SQL_VARCHAR"},
+            email = {value=content.email, sqltype="CF_SQL_VARCHAR"},
+            age = {value=content.age, sqltype="CF_SQL_INTEGER"}
+        };
+        var message = new core.Message();
+        try{
+            local.qUpdate = queryExecute(
+                "UPDATE personal SET name = :name, email = :email, age = :age WHERE id = :id",
+                local.dataToUpdate
+            );
+            flash("success", "Update Data Success");
+        } catch (any e) {
+            flash("danger", "Update Data Failed");
+        }
     }
 
-    public struct function deleteData(id){
-        return { 
-            code: 200,
-			success=true,
-			message="Delete Data Success", 
-            key=id,
-			data= {
-                name="Pojok Code"
-            }
-		};
+    public void function deleteData(id){
+        try{
+            local.qDelete = queryExecute(
+                "DELETE FROM personal WHERE id = ?",
+                [id]
+            );
+            flash("success", "Delete Data Success");
+        } catch (any e) {
+            flash("danger", "Delete Data Failed");
+        }
     }
 }

@@ -18,6 +18,7 @@
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
                     <th scope="col">Age</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
@@ -29,6 +30,10 @@
                         <td>#i.name#</td>
                         <td>#i.email#</td>
                         <td>#i.age#</td>
+                        <td>
+                            <a href="#application.baseURL#/employee/edit/#i.id#" class="btn btn-sm btn-success">Edit</a>
+                            <a href="#application.baseURL#/employee/delete/#i.id#" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
                     </tr>
                 </cfloop>   
             </tbody>

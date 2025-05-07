@@ -1,5 +1,5 @@
 
-component {
+component extends="core.Message" {
     function init() {
         return this;
     }
@@ -25,6 +25,10 @@ component {
         }else{
             throw("File not found: " & modelPath);
         }
+    }
+
+    function redirect(parhUrl){
+        cflocation(url=application.baseURL & parhUrl);
     }
 
 }
