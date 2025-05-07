@@ -2,6 +2,11 @@
 component extends="core.BaseController" {
 
     variables.emp = model("em.Employee");
+    variables.rules = {
+        name: "required",
+        email: "required|is_email",
+        age: "required|is_numeric"
+    }
     
     public function init() {
         return this;
@@ -23,11 +28,6 @@ component extends="core.BaseController" {
     }
 
     public any function createData(content={}){
-        var rules = {
-            name: "required",
-            email: "required|is_email",
-            age: "required|is_numeric"
-        }
         var result = validate(content, rules);
         if(result.success){
             local.content = emp.createData(content);
@@ -43,11 +43,6 @@ component extends="core.BaseController" {
     }
 
     public any function updateData(id, content={}){
-        var rules = {
-            name: "required",
-            email: "required|is_email",
-            age: "required|is_numeric"
-        }
         var result = validate(content, rules);
         if(result.success){
             content.id = id;
