@@ -3,6 +3,7 @@
 <urlrewrite>
     <rule>
         <condition type="request-uri" operator="notequal">^/lucee/(.*)$</condition>
+        <condition type="request-uri" operator="notequal">^/public/(.*)$</condition>
         <from>^/(.*)$</from>
         <to type="passthrough" qsappend="true">/index.cfm?page=$1</to>
     </rule>

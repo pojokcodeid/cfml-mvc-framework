@@ -43,6 +43,36 @@ component extends="core.BaseController" {
     }
 
     public any function createData(content={}){
+        if (structKeyExists(content, "lampiran")) { 
+            // Ambil informasi file upload
+            fileField = "lampiran";
+            uploadDir = expandPath("/public/uploads/");
+          
+            // Buat folder jika belum ada
+            if (!directoryExists(uploadDir)) {
+              directoryCreate(uploadDir);
+            }
+          
+            // Upload dan rename
+            uploadedFile = fileUpload(
+                destination = uploadDir, 
+                fileField = fileField, 
+                mode = "makeunique"
+            );
+            // Ambil ekstensi file original
+            fileExt = listLast(uploadedFile.serverFile, ".");
+          
+            // Generate nama UUID
+            uuidName = createUUID() & "." & fileExt;
+          
+            
+            // Rename file ke UUID
+            fileMove(
+              source = uploadedFile.serverDirectory & "/" & uploadedFile.serverFile,
+              destination = uploadDir & uuidName
+            );
+
+        }
         var result = validate(content, rules);
         var retdata = {
             name: content.name,

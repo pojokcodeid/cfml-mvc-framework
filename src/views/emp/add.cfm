@@ -15,7 +15,7 @@
             </div>
         </cfif>
         <h3>Add Employee</h3>
-        <form class="mt-4" action="#application.baseURL#/employee" method="post">
+        <form class="mt-4" action="#application.baseURL#/employee" method="post" enctype="multipart/form-data">
             <div class="mb-3 row">
                 <label for="name" class="col-sm-2 col-form-label">Name</label>
                 <div class="col-sm-10">
@@ -32,6 +32,12 @@
                 <label for="age" class="col-sm-2 col-form-label">Age</label>
                 <div class="col-sm-3">
                   <input type="text" class="form-control" name="age" id="age" value="#data.age#">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="lampiran" class="col-sm-2 col-form-label">Lampiran</label>
+                <div class="col-sm-3">
+                  <input type="file" class="form-control" name="lampiran" id="lampiran">
                 </div>
             </div>
             <div class="mb-3 row">
