@@ -42,7 +42,7 @@ component extends="core.BaseController" {
         });
     }
 
-    public any function createData(content={}){
+    private void function uploadAttach(content={}){
         if (structKeyExists(content, "lampiran")) { 
             // Ambil informasi file upload
             fileField = "lampiran";
@@ -64,7 +64,7 @@ component extends="core.BaseController" {
           
             // Generate nama UUID
             uuidName = createUUID() & "." & fileExt;
-          
+            content.lampiran = uuidName;
             
             // Rename file ke UUID
             fileMove(
@@ -73,6 +73,11 @@ component extends="core.BaseController" {
             );
 
         }
+    }
+
+    public any function createData(content={}){
+        var uuidName = "";
+        uploadAttach(content);
         var result = validate(content, rules);
         var retdata = {
             name: content.name,
@@ -95,16 +100,37 @@ component extends="core.BaseController" {
     }
 
     public any function updateData(id, content={}){
+        // writeDump(var=content, label="content");
+        // abort;
         var result = validate(content, rules);
         var retData = {
             id: id,
             name: content.name,
             email: content.email,
-            age: content.age
+            age: content.age,
+            attachment: content.lampiran
         };
         if(result.success){
             try{
                 content.id = id;
+                // check data exists 
+                var data = emp.getById(id);
+                if (not structKeyExists(data, "id")) { 
+                    flash("danger", "Data Not Found");
+                    redirect("/employee");
+                }
+                // cek apakah lampiran ada isinya
+                if (structKeyExists(content, "lampiran") && len(trim(content.lampiran)) > 0) {
+                    // hapus file lama
+                    if (structKeyExists(data, "attachment")) {
+                        var fileToDelete = expandPath("/public/uploads/") & data.attachment;
+                        if (fileExists(fileToDelete)) {
+                            fileDelete(fileToDelete);
+                        }
+                    }
+                    // upload file baru
+                    uploadAttach(content);
+                }
                 emp.updateData(content);
                 flash("success", "Update Data Success");
                 redirect("/employee");

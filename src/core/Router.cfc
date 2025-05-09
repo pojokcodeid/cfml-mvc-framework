@@ -11,6 +11,6 @@ component {
         app.post("/employee/edit/:id", { controller: "em.EmployeeController", method: "updateData"});
         app.post("/employee", { controller: "em.EmployeeController", method: "createData"});
         app.get("/employee/delete/:id", { controller: "em.EmployeeController", method: "deleteData"});
-        return app.run();
+        app.run();
     }
 }

@@ -10,7 +10,7 @@
             </div>
         </cfif>
         <h3>Edit Employee</h3>
-        <form class="mt-4" action="#application.baseURL#/employee/edit/#data.id#" method="post">
+        <form class="mt-4" action="#application.baseURL#/employee/edit/#data.id#" method="post" enctype="multipart/form-data">
             <div class="mb-3 row">
                 <label for="name" class="col-sm-2 col-form-label">Name</label>
                 <div class="col-sm-10">
@@ -27,6 +27,25 @@
                 <label for="age" class="col-sm-2 col-form-label">Age</label>
                 <div class="col-sm-3">
                   <input type="text" class="form-control" name="age" id="age" value="#data.age#">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="lampiran" class="col-sm-2 col-form-label">Lampiran</label>
+                <div class="col-sm-3">
+                  <input type="file" class="form-control" name="lampiran" id="lampiran">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-3">
+                  <div class="col-sm-5">
+                    <cfif len(data.attachment)>
+                      <figure class="figure">
+                        <img src="#application.baseURL#/public/uploads/#data.attachment#" class="figure-img img-fluid rounded" alt="#data.attachment#">
+                        <figcaption class="figure-caption">Current Attachment</figcaption>
+                      </figure>
+                    </cfif>
+                  </div>
                 </div>
             </div>
             <div class="mb-3 row">
