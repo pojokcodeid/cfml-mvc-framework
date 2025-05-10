@@ -42,42 +42,8 @@ component extends="core.BaseController" {
         });
     }
 
-    private void function uploadAttach(content={}){
-        if (structKeyExists(content, "lampiran")) { 
-            // Ambil informasi file upload
-            fileField = "lampiran";
-            uploadDir = expandPath("/public/uploads/");
-          
-            // Buat folder jika belum ada
-            if (!directoryExists(uploadDir)) {
-              directoryCreate(uploadDir);
-            }
-          
-            // Upload dan rename
-            uploadedFile = fileUpload(
-                destination = uploadDir, 
-                fileField = fileField, 
-                mode = "makeunique"
-            );
-            // Ambil ekstensi file original
-            fileExt = listLast(uploadedFile.serverFile, ".");
-          
-            // Generate nama UUID
-            uuidName = createUUID() & "." & fileExt;
-            content.lampiran = uuidName;
-            
-            // Rename file ke UUID
-            fileMove(
-              source = uploadedFile.serverDirectory & "/" & uploadedFile.serverFile,
-              destination = uploadDir & uuidName
-            );
-
-        }
-    }
-
     public any function createData(content={}){
         var uuidName = "";
-        uploadAttach(content);
         var result = validate(content, rules);
         var retdata = {
             name: content.name,
@@ -86,6 +52,9 @@ component extends="core.BaseController" {
         };
         if(result.success){
             try{
+                if (structKeyExists(content, "lampiran")) {
+                    content.lampiran = upload(expandPath("/public/uploads/"), content.lampiran);
+                }
                 emp.createData(content);
                 flash("success", "Create Data Success");
                 redirect("/employee");
@@ -100,8 +69,6 @@ component extends="core.BaseController" {
     }
 
     public any function updateData(id, content={}){
-        // writeDump(var=content, label="content");
-        // abort;
         var result = validate(content, rules);
         var retData = {
             id: id,
@@ -121,15 +88,17 @@ component extends="core.BaseController" {
                 }
                 // cek apakah lampiran ada isinya
                 if (structKeyExists(content, "lampiran") && len(trim(content.lampiran)) > 0) {
-                    // hapus file lama
-                    if (structKeyExists(data, "attachment")) {
-                        var fileToDelete = expandPath("/public/uploads/") & data.attachment;
-                        if (fileExists(fileToDelete)) {
-                            fileDelete(fileToDelete);
-                        }
+                    // hapus file lama 
+                    if( structKeyExists(data, "attachment") && len(trim(data.attachment)) > 0){
+                         var fileToDelete = expandPath("/public/uploads/") & data.attachment;
+                         if(fileExists(fileToDelete)){
+                             fileDelete(fileToDelete);
+                         }
                     }
                     // upload file baru
-                    uploadAttach(content);
+                    if (structKeyExists(content, "lampiran")) {
+                        content.lampiran = upload(expandPath("/public/uploads/"), content.lampiran);
+                    }
                 }
                 emp.updateData(content);
                 flash("success", "Update Data Success");
@@ -145,6 +114,19 @@ component extends="core.BaseController" {
     }
     public struct function deleteData(id){
         try{
+            // check data exists 
+            var data = emp.getById(id);
+            if (not structKeyExists(data, "id")) { 
+                flash("danger", "Data Not Found");
+                redirect("/employee");
+            }
+            // hapus file lama 
+            if( structKeyExists(data, "attachment") && len(trim(data.attachment)) > 0){
+                    var fileToDelete = expandPath("/public/uploads/") & data.attachment;
+                    if(fileExists(fileToDelete)){
+                        fileDelete(fileToDelete);
+                    }
+            }
             var result = emp.deleteData(id);
             if(result.id != 0){        
                 flash("success", "Delete Data Success");
